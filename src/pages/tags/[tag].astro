@@ -6,9 +6,8 @@ import PostCard from '../../components/PostCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import { getCollection } from 'astro:content';
 
-const posts = await getCollection('blog');
-
 export async function getStaticPaths() {
+  const posts = await getCollection('blog');
   const tags = Array.from(new Set(posts.flatMap((post) => post.data.tags ?? [])));
   return tags.map((tag) => ({
     params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
@@ -16,6 +15,7 @@ export async function getStaticPaths() {
   }));
 }
 
+const posts = await getCollection('blog');
 const tagSlug = Astro.params.tag as string;
 const normalizedPosts = posts.filter((post) =>
   post.data.tags?.some((tag) => tag.toLowerCase().replace(/\s+/g, '-') === tagSlug),
