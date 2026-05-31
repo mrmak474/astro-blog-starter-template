@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630">
+      <stop stop-color="#eff6ff" />
+      <stop offset="1" stop-color="#f8fafc" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="48" fill="url(#bg)" />
+  <path d="M240 470C240 392.536 305.536 327 383 327H780C857.464 327 923 392.536 923 470V515C923 540.748 901.748 562 876 562H287C261.252 562 240 540.748 240 515V470Z" fill="#1d4ed8" opacity="0.16"/>
+  <path d="M393 302C393 272.386 417.386 248 447 248H753C782.614 248 807 272.386 807 302V341C807 370.614 782.614 395 753 395H447C417.386 395 393 370.614 393 341V302Z" fill="#2563eb" opacity="0.18"/>
+  <circle cx="800" cy="200" r="72" fill="#3b82f6" opacity="0.25" />
+  <path d="M720 187L776 196L805 242" stroke="#1d4ed8" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="260" y="170" width="440" height="280" rx="36" fill="white" stroke="#cbd5e1" stroke-width="2" />
+  <rect x="310" y="230" width="320" height="28" rx="14" fill="#0f172a" opacity="0.9" />
+  <rect x="310" y="283" width="240" height="20" rx="10" fill="#475569" opacity="0.77" />
+  <rect x="310" y="319" width="180" height="20" rx="10" fill="#475569" opacity="0.55" />
+  <rect x="310" y="356" width="280" height="20" rx="10" fill="#475569" opacity="0.55" />
+  <rect x="310" y="393" width="220" height="20" rx="10" fill="#475569" opacity="0.55" />
+  <circle cx="780" cy="380" r="80" fill="#fff" stroke="#93c5fd" stroke-width="12" />
+  <path d="M765 380H795M780 365V395" stroke="#2563eb" stroke-width="12" stroke-linecap="round" />
+  <text x="120" y="110" fill="#0f172a" font-family="Inter, sans-serif" font-size="52" font-weight="700">MedBilling</text>
+  <text x="120" y="170" fill="#475569" font-family="Inter, sans-serif" font-size="32">and Coding Guidance</text>
+</svg>

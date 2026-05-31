@@ -1,0 +1,74 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const categories = Array.from(new Set(posts.flatMap((post) => post.data.categories ?? []))).sort();
+const tags = Array.from(new Set(posts.flatMap((post) => post.data.tags ?? []))).sort();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} image="/images/og-medbillingandcoding.svg" />
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <Header />
+    <main class="site-container py-12">
+      <section class="space-y-6">
+        <div class="rounded-[32px] bg-white p-8 shadow-soft">
+          <p class="text-sm font-semibold uppercase tracking-[0.3em] text-brand-700">Blog</p>
+          <h1 class="text-4xl font-semibold tracking-tight text-slate-900">Medical billing and coding insights for revenue cycle leaders.</h1>
+          <p class="max-w-3xl text-lg leading-8 text-slate-600">Explore practical strategies, coding updates, claims appeals guides, and revenue optimization tips for healthcare practices.</p>
+        </div>
+      </section>
+
+      <section class="grid gap-10 xl:grid-cols-[0.72fr_0.28fr]">
+        <div class="space-y-8">
+          <div class="grid gap-6">
+            {posts.map((post) => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                heroImage={post.data.heroImage}
+                categories={post.data.categories}
+                tags={post.data.tags}
+                href={`/blog/${post.id}/`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <aside class="space-y-6 rounded-[32px] border border-slate-200 bg-white p-6 shadow-soft">
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900">Categories</h2>
+            <div class="mt-4 flex flex-wrap gap-3">
+              {categories.map((category) => (
+                <a href={`/categories/${category.toLowerCase().replace(/\s+/g, '-')}/`} class="rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-brand-300 hover:text-brand-700">{category}</a>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900">Tags</h2>
+            <div class="mt-4 flex flex-wrap gap-3">
+              {tags.map((tag) => (
+                <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`} class="rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-brand-300 hover:text-brand-700">#{tag}</a>
+              ))}
+            </div>
+          </div>
+          <div class="rounded-3xl bg-brand-50 p-5 text-slate-700">
+            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-brand-700">Need faster approvals?</p>
+            <p class="mt-3 text-sm leading-7">Use our blog as a resource for appeals writing, denial prevention, and compliant coding workflows.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

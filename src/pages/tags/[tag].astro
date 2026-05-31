@@ -1,0 +1,58 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+
+export async function getStaticPaths() {
+  const tags = Array.from(new Set(posts.flatMap((post) => post.data.tags ?? [])));
+  return tags.map((tag) => ({
+    params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+    props: { tag },
+  }));
+}
+
+const tagSlug = Astro.params.tag as string;
+const normalizedPosts = posts.filter((post) =>
+  post.data.tags?.some((tag) => tag.toLowerCase().replace(/\s+/g, '-') === tagSlug),
+);
+const tagName = normalizedPosts[0]?.data.tags?.find(
+  (tag) => tag.toLowerCase().replace(/\s+/g, '-') === tagSlug,
+) ?? tagSlug.replace(/-/g, ' ');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${tagName} | ${SITE_TITLE}`} description={`${SITE_TITLE} articles tagged ${tagName}.`} />
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <Header />
+    <main class="site-container py-12">
+      <section class="space-y-6">
+        <div class="rounded-[32px] bg-white p-8 shadow-soft">
+          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700">Tag</p>
+          <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-900">#{tagName}</h1>
+          <p class="mt-4 max-w-3xl text-lg leading-8 text-slate-600">Explore posts tagged with {tagName} to learn more about billing workflows and coding guidance.</p>
+        </div>
+        <div class="grid gap-6">
+          {normalizedPosts.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              heroImage={post.data.heroImage}
+              categories={post.data.categories}
+              tags={post.data.tags}
+              href={`/blog/${post.id}/`}
+            />
+          ))}
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

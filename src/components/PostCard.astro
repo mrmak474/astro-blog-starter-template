@@ -1,0 +1,35 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  heroImage?: string;
+  categories?: string[];
+  tags?: string[];
+  href: string;
+}
+
+const { title, description, pubDate, heroImage, categories = [], tags = [], href } = Astro.props;
+---
+<article class="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-soft">
+  <a href={href} class="block">
+    {heroImage ? (
+      <img src={heroImage} alt={title} class="h-56 w-full object-cover" />
+    ) : (
+      <div class="flex h-56 items-center justify-center bg-slate-100 text-slate-400">Featured article</div>
+    )}
+    <div class="space-y-3 p-6">
+      <div class="flex flex-wrap gap-2 text-xs uppercase tracking-[0.24em] text-brand-700">
+        {categories.map((category) => (
+          <span class="rounded-full bg-brand-100 px-3 py-1">{category}</span>
+        ))}
+      </div>
+      <h2 class="text-2xl font-semibold text-slate-900 transition group-hover:text-brand-700">{title}</h2>
+      <p class="text-sm text-slate-600">{description}</p>
+      <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+        <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
+        {tags.length > 0 ? <span>{tags.join(' · ')}</span> : null}
+      </div>
+    </div>
+  </a>
+</article>

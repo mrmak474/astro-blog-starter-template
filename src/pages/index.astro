@@ -1,0 +1,91 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PostCard from '../components/PostCard.astro';
+import MonetizationSection from '../components/MonetizationSection.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const featured = posts.slice(0, 3);
+const categories = Array.from(new Set(posts.flatMap((post) => post.data.categories ?? []))).sort();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image="/images/hero-medical.svg" />
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <Header />
+    <main class="site-container space-y-20 py-12 md:py-16">
+      <section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div class="space-y-6">
+          <p class="inline-flex rounded-full bg-brand-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-brand-700">Medical billing intelligence</p>
+          <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">Improve revenue, reduce denials, and master compliance for modern medical practices.</h1>
+          <p class="max-w-2xl text-lg leading-8 text-slate-600">Practical articles, workflow guidance, and coding best practices designed for revenue cycle leaders, providers, and medical billing teams.</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="/blog" class="inline-flex items-center justify-center rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800">Read the latest blog</a>
+            <a href="/search" class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:border-brand-700 hover:text-brand-700">Search topics</a>
+          </div>
+        </div>
+        <div class="rounded-[32px] bg-white p-8 shadow-soft">
+          <div class="space-y-4">
+            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-brand-700">Core services</p>
+            <ul class="space-y-4 text-slate-600">
+              <li class="flex gap-3"><span class="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">1</span>Claims denial analysis and appeals roadmaps.</li>
+              <li class="flex gap-3"><span class="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">2</span>Coding audit checklists that protect revenue and compliance.</li>
+              <li class="flex gap-3"><span class="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">3</span>Revenue cycle optimization for faster reimbursements.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-brand-700">Featured insights</p>
+            <h2 class="text-3xl font-semibold tracking-tight text-slate-900">Latest posts for billing teams</h2>
+          </div>
+          <a href="/blog" class="text-sm font-semibold text-brand-700 hover:text-brand-800">Explore the full blog →</a>
+        </div>
+        <div class="grid gap-6 lg:grid-cols-3">
+          {featured.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              heroImage={post.data.heroImage}
+              categories={post.data.categories}
+              tags={post.data.tags}
+              href={`/blog/${post.id}/`}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section class="space-y-6 rounded-[32px] border border-slate-200 bg-white p-8 shadow-soft">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-brand-700">Browse by category</p>
+            <h2 class="text-3xl font-semibold tracking-tight text-slate-900">Medical billing topics to grow your practice.</h2>
+          </div>
+          <a href="/categories" class="text-sm font-semibold text-brand-700 hover:text-brand-800">View all categories →</a>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          {categories.map((category) => (
+            <a href={`/categories/${category.toLowerCase().replace(/\s+/g, '-')}/`} class="rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:border-brand-300 hover:bg-white">
+              <p class="text-sm font-semibold uppercase tracking-[0.3em] text-brand-700">{category}</p>
+              <p class="mt-3 text-slate-600">Read expert articles, checklists, and billing strategy for {category.toLowerCase()}.</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <MonetizationSection />
+    </main>
+    <Footer />
+  </body>
+</html>

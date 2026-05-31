@@ -1,0 +1,97 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_IMAGE, SITE_URL } from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedDate?: string;
+  modifiedDate?: string;
+  tags?: string[];
+  category?: string;
+  authorName?: string;
+  canonicalURL?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE_DESCRIPTION,
+  image = SITE_IMAGE,
+  type = 'website',
+  publishedDate,
+  modifiedDate,
+  tags = [],
+  category,
+  authorName = 'MedBillingAndCoding Editorial Team',
+  canonicalURL,
+  noindex = false,
+} = Astro.props;
+
+const currentURL = canonicalURL || new URL(Astro.url.pathname, Astro.site).toString();
+const imageUrl = image.startsWith('http') ? image : new URL(image, Astro.site).toString();
+const logoUrl = new URL('/favicon.svg', Astro.site).toString();
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  url: SITE_URL,
+  name: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_TITLE,
+    logo: {
+      '@type': 'ImageObject',
+      url: logoUrl,
+    },
+  },
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title || SITE_TITLE,
+  description,
+  image: imageUrl,
+  author: {
+    '@type': 'Person',
+    name: authorName,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_TITLE,
+    logo: {
+      '@type': 'ImageObject',
+      url: logoUrl,
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': currentURL,
+  },
+  datePublished: publishedDate,
+  dateModified: modifiedDate || publishedDate,
+  keywords: tags.join(', '),
+  articleSection: category,
+};
+
+const schema = type === 'article' ? articleSchema : websiteSchema;
+---
+<title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
+<meta name="description" content={description} />
+{noindex ? <meta name="robots" content="noindex,follow" /> : null}
+<meta property="og:title" content={title || SITE_TITLE} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:url" content={currentURL} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title || SITE_TITLE} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<link rel="canonical" href={currentURL} />
+{tags.length > 0 ? <meta name="keywords" content={tags.join(', ')} /> : null}
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
